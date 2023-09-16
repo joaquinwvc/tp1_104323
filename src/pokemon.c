@@ -194,7 +194,79 @@ bool parsear_ataque(const char *str, struct ataque *ataque)
 
 informacion_pokemon_t *pokemon_cargar_archivo(const char *path)
 {
-	return NULL;
+	if (path == NULL)
+		return NULL;
+
+	FILE *archivo = fopen(path, "r");
+	if (archivo == NULL)
+		return NULL;
+
+	informacion_pokemon_t *ip = info_pokemon_crear();
+	if (ip == NULL) {
+		fclose(archivo);
+		return NULL;
+	}
+	//ip es un vector de punteros a pokemon_t vacios y cant = 0
+
+	char buffer[MAX_BUFFER];
+	while (fgets(buffer, MAX_BUFFER, archivo) != NULL) {
+		//aca completare el pokemon que vaya leyendo. en caso de alguna falla no tengo que liberar nada
+		pokemon_t pokemon_aux;
+
+		if (parsear_nombre_tipo(buffer, &pokemon_aux) == false)
+			break;
+		//pokemon_aux tiene rellenado nombre y tipo
+
+		int cant_ataques_completados = 0;
+
+		//ahora voy a leer 3 ataques
+		for (size_t i = 0; i < MAX_ATAQUES; i++) {
+			if (fgets(buffer, MAX_BUFFER, archivo) == NULL)
+				break;
+
+			//parseo el taque i-esimo de pokemon_aux
+			if (parsear_ataque(buffer, pokemon_aux.ataques + i) ==
+			    false)
+				break;
+
+			cant_ataques_completados++;
+		}
+
+		if (cant_ataques_completados != MAX_ATAQUES)
+			break;
+		//complete los 3 ataques de pokemon_aux
+
+		//lei el pokemon actual exitosamente y pokemon_aux esta completo
+
+		//pido memoria para hacer efectiva la carga
+		pokemon_t *pokemon = pokemon_crear();
+		if (pokemon == NULL)
+			break;
+
+		*pokemon = pokemon_aux;
+
+		if (info_pokemon_agregar_final(ip, pokemon) == false) {
+			pokemon_destruir(pokemon);
+			break;
+		}
+	}
+
+	//se leyo todo el archivo -> cierro
+	fclose(archivo);
+
+	//si no leyo nada, entonces destruye todo
+	if (info_pokemon_es_vacio(ip)) {
+		pokemon_destruir_todo(ip);
+		return NULL;
+	}
+	//aca ordeno pokemones
+	if (info_pokemon_ordenar(ip) == false) {
+		pokemon_destruir_todo(ip);
+		return NULL;
+	}
+
+	//ip tiene todos los pokemones que pudo leer
+	return ip;
 }
 
 pokemon_t *pokemon_buscar(informacion_pokemon_t *ip, const char *nombre)
