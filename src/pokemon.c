@@ -12,7 +12,7 @@
 #define MAX_NOMBRE 50
 #define MAX_ATAQUES 3
 
-#define STR_AUX 50
+#define MAX_BUFFER 50
 
 struct pokemon {
 	char nombre[MAX_NOMBRE];
@@ -271,42 +271,78 @@ informacion_pokemon_t *pokemon_cargar_archivo(const char *path)
 
 pokemon_t *pokemon_buscar(informacion_pokemon_t *ip, const char *nombre)
 {
+	if (ip == NULL || nombre == NULL)
+		return NULL;
+
+	for (size_t i = 0; i < ip->cantidad_pokemones; i++) {
+		//pokemon_comparar_nombre devuelve true si son iguales
+		if (pokemon_comparar_nombre(ip->pokemones[i], nombre))
+			return ip->pokemones[i];
+	}
+
 	return NULL;
 }
 
 int pokemon_cantidad(informacion_pokemon_t *ip)
 {
-	return 0;
+	return ip == NULL ? 0 : (int)(ip->cantidad_pokemones);
 }
 
 const char *pokemon_nombre(pokemon_t *pokemon)
 {
-	return NULL;
+	return pokemon == NULL ? NULL : pokemon->nombre;
 }
 
 enum TIPO pokemon_tipo(pokemon_t *pokemon)
 {
-	return FUEGO;
+	return pokemon == NULL ? NORMAL : pokemon->tipo;
 }
 
 const struct ataque *pokemon_buscar_ataque(pokemon_t *pokemon,
 					   const char *nombre)
 {
+	if (pokemon == NULL || nombre == NULL)
+		return NULL;
+
+	for (size_t i = 0; i < MAX_ATAQUES; i++)
+		if (strcmp(pokemon->ataques[i].nombre, nombre) == 0)
+			return pokemon->ataques + i;
+
 	return NULL;
 }
 
 int con_cada_pokemon(informacion_pokemon_t *ip, void (*f)(pokemon_t *, void *),
 		     void *aux)
 {
-	return 0;
+	if (ip == NULL || f == NULL)
+		return 0;
+
+	for (size_t i = 0; i < pokemon_cantidad(ip); i++)
+		f(ip->pokemones[i], aux);
+
+	return pokemon_cantidad(ip);
 }
 
 int con_cada_ataque(pokemon_t *pokemon,
 		    void (*f)(const struct ataque *, void *), void *aux)
 {
-	return 0;
+	if (pokemon == NULL || f == NULL)
+		return 0;
+
+	for (size_t i = 0; i < MAX_ATAQUES; i++)
+		f(pokemon->ataques + i, aux);
+
+	return MAX_ATAQUES;
 }
 
 void pokemon_destruir_todo(informacion_pokemon_t *ip)
 {
+	if (ip == NULL)
+		return;
+
+	for (size_t i = 0; i < pokemon_cantidad(ip); i++)
+		pokemon_destruir(ip->pokemones[i]);
+
+	free(ip->pokemones);
+	free(ip);
 }
