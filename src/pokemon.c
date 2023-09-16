@@ -15,11 +15,14 @@
 #define STR_AUX 50
 
 struct pokemon {
-	int pone_lo_que_haga_falta;
+	char nombre[MAX_NOMBRE];
+	enum TIPO tipo;
+	struct ataque ataques[MAX_ATAQUES];
 };
 
 struct info_pokemon {
-	int aca_tambien;
+	pokemon_t **pokemones;
+	size_t cantidad_pokemones;
 };
 
 informacion_pokemon_t *pokemon_cargar_archivo(const char *path)
