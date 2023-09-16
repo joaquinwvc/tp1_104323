@@ -5,6 +5,15 @@
 #include "ataque.h"
 #include <string.h>
 
+#include <stdbool.h>
+#include <ctype.h>
+#include <errno.h>
+
+#define MAX_NOMBRE 50
+#define MAX_ATAQUES 3
+
+#define STR_AUX 50
+
 struct pokemon {
 	int pone_lo_que_haga_falta;
 };
