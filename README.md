@@ -4,7 +4,7 @@
 
 # TP1
 
-## Repositorio de (Nombre Apellido) - (Padrón) - (Mail)
+## Repositorio de (Joaquin Vargas) - (104323) - (jvargas@fi.uba.ar)
 
 - Para compilar:
 
