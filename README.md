@@ -147,10 +147,6 @@ pokemon_t *pokemon = pokemon_crear();
 *pokemon = pokemon_aux
 ```
 
-En memoria, esta parte del proceso queda de la siguiente manera:
-
-
-
 Se puede lograr así que el agrandamiento del vector de `pokemon_t *` se realice únicamente si el pokemon leído es válido. La función que lo lleva a cabo es `info_pokemon_agregar_final` que como su nombre lo indica agrega el pokemon reservado en el Heap anteriormente al vector de `ip`.
 
 ```c
@@ -160,5 +156,18 @@ if (info_pokemon_agregar_final(ip, pokemon) == false) {
 }
 ```
 
+La representacion en memoria es la siguiente:
+
+<div align="center">
+<img width="100%" src="img/distribucion en memoria.svg">
+</div>
+
 Si bien no se impone algún ordenamiento al definir el tda `info_pokemon_t`, en la función `pokemon_cargar_archivo` se decide realizarlo mediante el método burbujeo.
 
+## Funcionamiento
+
+El flujo general de la funcion `pokemon_cargar_archivo` es expone a continuacion. El requerimiento que posee es que devuelva `NULL` unicamente en caso de falla en la apertura de archivo, fallo en la reserva de memoria del contenedor de pokemones o si la misma se encuentra vacia. En cualquier otro caso, se devuelve la mayor cantidad de pokemones validos leidos.
+
+<div align="center">
+<img width="100%" src="img/pokemon_cargar_archivo.svg">
+</div>
