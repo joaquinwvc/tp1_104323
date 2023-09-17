@@ -58,3 +58,38 @@ vector_original = vector;
 
 ## Respuestas a las preguntas teóricas
 Incluír acá las respuestas a las preguntas del enunciado (si aplica).
+
+## Introducción 
+
+El presente trabajo practico tiene como finalidad leer la máxima cantidad de pokemones posibles de un archivo y poder operar con los mismos. En este sentido se declararon previamente dos tipos de datos encapsulados llamados `pokemon_t` e `info_pokemon_t`.  
+
+## Diseño
+
+Para llevar a cabo este trabajo se tuvo en cuenta lo siguiente:
+
+Considerando que se leerán pokemones, se definió a la estructura pokemon_t como una que posee:
+
+- una cadena, de largo fijo, para el nombre.
+- un enumerativo para representar el tipo.
+- un vector ataque de 3 estructuras ataques. 
+
+Ahora bien, el archivo en principio esta pensado como una tira de pokemones, es decir que se debe extraer la mayor cantidad posible, según lo pedido. Como el número de pokemones a leer es arbitraria y se pide que en algún momento sean ordenados, se decidió que la estructura info_pokemon_t, quien contendrá a dichos personajes, este conformada por:
+
+- un pokemon_t **: Esto nos permitirá tratarlo como un vector de punteros a pokemon_t . La ventaja radica en que al momento de ordenarlos, las copias que se realizan en el proceso sean entre punteros a pokemon_t * y no entre las mismas estructuras. 
+- un size_t para indicar la cantidad de pokemones contenidos. 
+
+Resultando asi las estrucutras previamente declaradas:
+
+```c
+struct pokemon {
+    char nombre[MAX_NOMBRE];
+    enum TIPO tipo;
+    struct ataque ataques[MAX_ATAQUES];
+};
+
+struct info_pokemon {
+    pokemon_t **pokemones;
+    size_t cantidad_pokemones;
+};
+```
+Con la utilización de un puntero doble se impone el uso de memoria dinámica.
