@@ -169,5 +169,5 @@ Si bien no se impone algún ordenamiento al definir el tda `info_pokemon_t`, en 
 El flujo general de la funcion `pokemon_cargar_archivo` es expone a continuacion. El requerimiento que posee es que devuelva `NULL` unicamente en caso de falla en la apertura de archivo, fallo en la reserva de memoria del contenedor de pokemones o si la misma se encuentra vacia. En cualquier otro caso, se devuelve la mayor cantidad de pokemones validos leidos.
 
 <div align="center">
-<img width="100%" src="img/pokemon_cargar_archivo.svg">
+<img width="100%" src="img/diagrama_flujo.svg">
 </div>
