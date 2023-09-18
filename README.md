@@ -137,7 +137,7 @@ bool info_pokemon_ordenar(informacion_pokemon_t *ip)
 }
 ```
 
-El metodo empleado para realizar esta tarea es el Ordenamiento de Burbuja. Esta basado en la iteracion de todo el vector, intercambiando la posicion i con la i + 1 en caso de que el primero sea mayor que el segundo hasta que no haga falta hacer mas.
+El metodo empleado para realizar esta tarea es el Ordenamiento de Burbuja. Esta basado en la iteracion de todo el vector, intercambiando la posicion i con la i + 1 en caso de que el primero sea mayor que el segundo hasta que no haga falta hacer mas. La comparacion se realiza entre los nombres de los pokemones.
 
 Para analizar la complejidad computacional se debe tener en cuenta la cantidad de veces que se ejecutan lineas de codigo en la funcion. Contabilizando esto resulta asi:
 
