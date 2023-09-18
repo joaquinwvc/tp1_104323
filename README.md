@@ -1,64 +1,3 @@
-<div align="right">
-<img width="32px" src="img/algo2.svg">
-</div>
-
-# TP1
-
-## Repositorio de (Joaquin Vargas) - (104323) - (jvargas@fi.uba.ar)
-
-- Para compilar:
-
-```bash
-gcc -std=c99 -Wall -Wconversion -Wtype-limits -pedantic -Werror -O2 -g src/*.c ejemplo.c -o ejemplo
-```
-
-- Para ejecutar:
-
-```bash
-./ejemplo ejemplos/correcto.txt Pikachu Latigo
-```
-
-- Para ejecutar con valgrind:
-```bash
-valgrind --leak-check=full --track-origins=yes --show-reachable=yes --error-exitcode=2 --show-leak-kinds=all --trace-children=yes ./ejemplo ejemplos/correcto.txt Pikachu Latigo
-```
----
-##  Funcionamiento
-
-Explicación de cómo funcionan las estructuras desarrolladas en el TP y el funcionamiento general del mismo.
-
-Aclarar en esta parte todas las decisiones que se tomaron al realizar el TP, cosas que no se aclaren en el enunciado, fragmentos de código que necesiten explicación extra, etc.
-
-Incluír **EN TODOS LOS TPS** los diagramas relevantes al problema (mayormente diagramas de memoria para explicar las estructuras, pero se pueden utilizar otros diagramas si es necesario).
-
-### Por ejemplo:
-
-El programa funciona abriendo el archivo pasado como parámetro y leyendolo línea por línea. Por cada línea crea un registro e intenta agregarlo al vector. La función de lectura intenta leer todo el archivo o hasta encontrar el primer error. Devuelve un vector con todos los registros creados.
-
-<div align="center">
-<img width="70%" src="img/diagrama1.svg">
-</div>
-
-En el archivo `sarasa.c` la función `funcion1` utiliza `realloc` para agrandar la zona de memoria utilizada para conquistar el mundo. El resultado de `realloc` lo guardo en una variable auxiliar para no perder el puntero original en caso de error:
-
-```c
-int *vector = realloc(vector_original, (n+1)*sizeof(int));
-
-if(vector == NULL)
-    return -1;
-vector_original = vector;
-```
-
-
-<div align="center">
-<img width="70%" src="img/diagrama2.svg">
-</div>
-
----
-
-## Respuestas a las preguntas teóricas
-Incluír acá las respuestas a las preguntas del enunciado (si aplica).
-
 ## Introducción 
 
 El presente trabajo practico tiene como finalidad leer la máxima cantidad de pokemones posibles de un archivo y poder operar con los mismos. En este sentido se declararon previamente dos tipos de datos encapsulados llamados `pokemon_t` e `info_pokemon_t`.  
@@ -171,3 +110,58 @@ El flujo general de la funcion `pokemon_cargar_archivo` es expone a continuacion
 <div align="center">
 <img width="100%" src="img/diagrama_flujo.svg">
 </div>
+
+## Ordenamiento lexicográfico de pokemones
+
+La funcion encargada de ordenar los pokemones es la siguiente: 
+
+```c
+bool info_pokemon_ordenar(informacion_pokemon_t *ip)
+{
+	if (ip == NULL)
+		return false;
+
+	size_t cant_pokemones = (size_t)pokemon_cantidad(ip);
+
+	for (size_t i = 0; i < cant_pokemones; i++) {
+		for (size_t j = 0; j < cant_pokemones - i - 1; j++) {
+			if (strcmp(pokemon_nombre(ip->pokemones[j]), pokemon_nombre(ip->pokemones[j + 1])) > 0) {
+				pokemon_t *aux = ip->pokemones[j];
+				ip->pokemones[j] = ip->pokemones[j + 1];
+				ip->pokemones[j + 1] = aux;
+			}
+		}
+	}
+
+	return true;
+}
+```
+
+El metodo empleado para realizar esta tarea es el Ordenamiento de Burbuja. Esta basado en la iteracion de todo el vector, intercambiando la posicion i con la i + 1 en caso de que el primero sea mayor que el segundo hasta que no haga falta hacer mas.
+
+Para analizar la complejidad computacional se debe tener en cuenta la cantidad de veces que se ejecutan lineas de codigo en la funcion. Contabilizando esto resulta asi:
+
+```c
+bool info_pokemon_ordenar(informacion_pokemon_t *ip)
+{
+	if (ip == NULL) ---> 1
+		return false;  ---> 1
+
+	size_t cant_pokemones = (size_t)pokemon_cantidad(ip); ---> 1
+
+	for (size_t i = 0; i < cant_pokemones; i++) { ---> n - 1
+		for (size_t j = 0; j < cant_pokemones - i - 1; j++) { ---> n - 1 - i
+			if (strcmp(pokemon_nombre(ip->pokemones[j]), pokemon_nombre(ip->pokemones[j + 1])) > 0) { ---> 1
+				pokemon_t *aux = ip->pokemones[j]; ---> 1
+				ip->pokemones[j] = ip->pokemones[j + 1]; ---> 1
+				ip->pokemones[j + 1] = aux; ---> 1
+			}
+		}
+	}
+
+	return true; ---> 1
+}
+```
+
+Al sumar todas las intrucciones se obtiene que `T(N) = 2 + (n^2)/2 - n/2 = 1/2 (n^2 - n + 4)` veces que se ejecutan instrucciones, considerando a `n = cant_pokemones`. Luego, T(N) = O(N^2) ya que,  T(N) =< 1 * N^2 para n >= 2. entonces, n_0 = 2. Resulta asi que la funcion `info_pokemon_ordenar` es O(N^2).
+
